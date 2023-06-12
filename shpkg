@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ $1 == "update" ]
+then
+  echo ">> updating repo 'lfs' ... " -n
+  curl -o /usr/share/shpkg/packages.list https://raw.githubusercontent.com/cmcheeseman/shlfs/main/repo/packages.list
+fi
+
+if [ $1 == "install" ]
+do
+  if [ -z $(cat /usr/share/shpkg/packages.list | grep $2) ]
+  then
+    echo package $2 doesnt exist
+    exit
+  fi
+  echo ">> downloading package $2 ..."
+  curl -o /usr/share/shpkg/build https://github.com/cmcheeseman/shlfs/raw/main/repo/$2.tar.gz
+  tar -xvf /usr/share/shpkg/build/$2.tar.gz
+  cd /usr/share/shpkg/build/$2
+  bash install
+fi
