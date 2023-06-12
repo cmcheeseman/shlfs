@@ -6,6 +6,13 @@ then
   curl -o /usr/share/shpkg/packages.list https://raw.githubusercontent.com/cmcheeseman/shlfs/main/repo/packages.list
 fi
 
+
+if [ $1 == "search" ]
+then
+  cat /usr/share/shpkg/packages.list | grep $2
+fi
+
+
 if [ $1 == "install" ]
 then
   if [ -z $(cat /usr/share/shpkg/packages.list | grep $2) ]
