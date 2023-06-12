@@ -13,13 +13,40 @@ then
     echo package $2 doesnt exist
     exit
   fi
+
+
+  if [ ! -z $(cat /usr/share/shpkg/packages.installed | grep $2) ]
+  then
+    echo "package is already installed. reinstall the package? :"
+    read confirm
+    if [ ! $confirm == "yes" ]
+    then
+      exit
+    fi
+  fi
+
   echo ">> downloading package $2 ..."
   wget -O /usr/share/shpkg/build/$2.tar.gz https://github.com/cmcheeseman/shlfs/raw/main/repo/$2.tar.gz
   tar -xvf /usr/share/shpkg/build/$2.tar.gz -C /usr/share/shpkg/build/
   cd /usr/share/shpkg/build/$2
+  bash depends
+
+  if [ $? != 0 ]
+  then
+    echo ">> dependency requirements not meant EXITING."
+    rm -rf /usr/share/shpkg/build/$2* 
+    exit
+  fi
+
   bash install
   echo ">> cleaning up ..."
   rm -rvf /usr/share/shpkg/build/$2*
+
+  if [ -z $(cat /usr/share/shpkg/packages.installed | grep $2) ]
+  then
+    echo $2 >> /usr/share/shpkg/packages.installed
+
+  fi
   echo -n
   echo "done!"
 fi
