@@ -7,15 +7,19 @@ then
 fi
 
 if [ $1 == "install" ]
-do
+then
   if [ -z $(cat /usr/share/shpkg/packages.list | grep $2) ]
   then
     echo package $2 doesnt exist
     exit
   fi
   echo ">> downloading package $2 ..."
-  curl -o /usr/share/shpkg/build https://github.com/cmcheeseman/shlfs/raw/main/repo/$2.tar.gz
-  tar -xvf /usr/share/shpkg/build/$2.tar.gz
+  wget -O /usr/share/shpkg/build/$2.tar.gz https://github.com/cmcheeseman/shlfs/raw/main/repo/$2.tar.gz
+  tar -xvf /usr/share/shpkg/build/$2.tar.gz -C /usr/share/shpkg/build/
   cd /usr/share/shpkg/build/$2
   bash install
+  echo ">> cleaning up ..."
+  rm -rvf /usr/share/shpkg/build/$2*
+  echo -n
+  echo "done!"
 fi
