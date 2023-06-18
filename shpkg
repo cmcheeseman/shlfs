@@ -13,6 +13,29 @@ then
 fi
 
 
+
+if [ $1 == "install-local" ]
+then
+  tar -xvf $2.tar.gz
+  bash $2/depends
+  if [ $? != 0 ]
+  then
+    echo ">>> dependencies not meant EXITING"
+    exit
+  fi
+  bash $2/install
+  rm -rvf $2
+fi
+
+
+if [ $1 == "help" ]
+then
+  echo "shpkg update. updates package repo"
+  echo "shpkg search. search repo for package repo"
+  echo "shpkg install-local. install package from a local file. ( use package name instead of archive name )"
+  echo "shpkg install. install package from repo"
+fi
+
 if [ $1 == "install" ]
 then
   if [ -z $(cat /usr/share/shpkg/packages.list | grep $2) ]
